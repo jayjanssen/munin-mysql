@@ -141,6 +141,22 @@ my %config = (
     'maatkit_heartbeat' => $ENV{'maatkit_heartbeat'} || 0,
 );
 
+#---------------------------------------------------------------------
+# Patch for debian-sys-maint, must be run as root to get the file
+#---------------------------------------------------------------------
+my $debian_file = '/etc/mysql/debian.cnf';
+open( FILE, "<$debian_file" ) or die "Could not open $debian_file\n";
+
+while( my $line = <FILE> ) {
+    if( $line =~ m/^user\s+=\s+(.*)$/ ) {
+        $config{'user'} = $1;
+    } elsif( $line =~ m/^password\s+=\s+(.*)$/ ) {
+        $config{'password'} = $1;
+    }
+}
+close( FILE );
+
+
 
 #---------------------------------------------------------------------
 #  G R A P H   D E F I N I T I O N S
